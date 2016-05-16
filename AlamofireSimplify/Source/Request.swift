@@ -10,19 +10,15 @@ import Foundation
 
 public class Request {
     
+    // MARK: - Properties
     public let session: NSURLSession
-    
     public let delegate: TaskDelegate   
     
     public var response: NSHTTPURLResponse? {
         return delegate.task.response as? NSHTTPURLResponse
     }
     
-
-    deinit {
-        print("Request --deinit")
-    }
-    
+    // MARK: - Lifecycle
     init(session: NSURLSession, task: NSURLSessionTask) {
         self.session = session
         
@@ -39,7 +35,11 @@ public class Request {
         
     }
     
+    deinit {
+        print("Request --deinit")
+    }
     
+    // MARK: - PublicMethod
     public func responseString(closure: Response<String, NSError> -> Void) -> Self {
         delegate.queue.addOperationWithBlock {
             let result: Result<String, NSError> = {
@@ -54,34 +54,24 @@ public class Request {
             let response = Response(request: self.delegate.task.originalRequest, response: self.response, data: self.delegate.data, result: result)
             
             dispatch_async(dispatch_get_main_queue()) { closure(response) }
-//            closure(response)
         }
         return self
     }
 
-
 }
-
-
-
-
-
-
 
 
 public class TaskDelegate: NSObject {
     
+    // MARK: - Properties
     public let queue: NSOperationQueue
-    
     public let task: NSURLSessionTask
-    
     public let progress: NSProgress
-    
     public var data: NSMutableData?
     public var error: NSError?
-    
     public var uploadStream: NSInputStream?
     
+    // MARK: - Lifecycle
     init(task: NSURLSessionTask) {
         self.task = task
         progress = NSProgress(totalUnitCount: 0)
@@ -98,7 +88,8 @@ public class TaskDelegate: NSObject {
         queue.cancelAllOperations()
         queue.suspended = false
     }
-
+    
+    // MARK: - PublicMethod
     public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         print("007TaskDelegate-- didCompleteWithError")
         if let error = error {
@@ -110,33 +101,23 @@ public class TaskDelegate: NSObject {
 }
 
 
-
-
 public class DataTaskDelegate: TaskDelegate {
     
+    // MARK: - Properties
     public var dataTask: NSURLSessionDataTask? {
         return task as? NSURLSessionDataTask
     }
     
     public var expectedContentLength: Int64?
     public var totalBytesReceived: Int64 = 0
-//    public var dataProgress: ((Int64, Int64, Int64) -> Void)?
-    
 
-    
+    // MARK: - PublicMethod
     public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         print("004、DataTaskDelegate--didReceiveData")
         if self.data == nil {
             self.data = NSMutableData()
         }
         self.data?.appendData(data)
-        
-//        totalBytesReceived += data.length
-//        let totalBytesExpected = dataTask.response?.expectedContentLength ?? NSURLSessionTransferSizeUnknown
-        
-//        progress.totalUnitCount = totalBytesExpected
-//        progress.completedUnitCount = totalBytesReceived
-//        dataProgress?(Int64(data.length), totalBytesReceived, totalBytesExpected)
     }
     
 }

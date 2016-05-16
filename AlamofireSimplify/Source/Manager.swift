@@ -9,8 +9,7 @@
 import Foundation
 
 public class Manager {
-
-    
+    // MARK: - Properties
     public static let sharedInstance: Manager = {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         return Manager(configuration: configuration)
@@ -19,6 +18,7 @@ public class Manager {
     public let session: NSURLSession
     public let sessionDelegate: SessionDelegate
     
+    // MARK: - Lifecycle
     init(configuration: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration(),
          sessionDelegate: SessionDelegate = SessionDelegate()) {
         session = NSURLSession(configuration: configuration, delegate: sessionDelegate, delegateQueue: nil)
@@ -30,9 +30,7 @@ public class Manager {
         session.invalidateAndCancel()
     }
     
-    
-    
-    
+    // MARK: - PublicMethod
     public func request(
         httpMethod: Method,
         urlString: String,
@@ -45,8 +43,7 @@ public class Manager {
         let task = session.dataTaskWithRequest(mutableRequest)
         let request = Request(session: session, task: task)
         sessionDelegate[task] = request.delegate
-//        request.delegate.task.resume()
-        task.resume()
+        task.resume()   //同： request.delegate.task.resume()
         return request
     }
     

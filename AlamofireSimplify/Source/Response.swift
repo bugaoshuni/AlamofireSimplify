@@ -9,15 +9,13 @@
 import Foundation
 
 public struct Response<Value, Error: ErrorType> {
-    
+    // MARK: - Properties
     public let request: NSURLRequest?
-    
     public let response: NSHTTPURLResponse?
-    
     public let data: NSData?
-    
     public let result: Result<Value, Error>
     
+    // MARK: - Lifecycle
     public init(request: NSURLRequest?, response: NSHTTPURLResponse?, data: NSData?, result: Result<Value, Error>) {
         self.request = request
         self.response = response

@@ -9,9 +9,10 @@
 import Foundation
 
 public class SessionDelegate: NSObject, NSURLSessionDelegate {
-    
+    // MARK: - Properties
     private var tasks: [Int: TaskDelegate] = [:]
     
+    // MARK: - subscript
     subscript(task: NSURLSessionTask) -> TaskDelegate? {
         get {
             
@@ -30,7 +31,7 @@ public class SessionDelegate: NSObject, NSURLSessionDelegate {
 
 
 extension SessionDelegate: NSURLSessionTaskDelegate {
-
+    // MARK: - PublicMethod
     public func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
         print("6、NSURLSessionTaskDelegate--didCompleteWithError")
         if let error = error {
@@ -46,7 +47,7 @@ extension SessionDelegate: NSURLSessionTaskDelegate {
 
 
 extension SessionDelegate: NSURLSessionDataDelegate {
-    
+    // MARK: - PublicMethod
     public func URLSession(session: NSURLSession, dataTask: NSURLSessionDataTask, didReceiveData data: NSData) {
         print("3、NSURLSessionDataDelegate--didReceiveData")
         if let delegate = self[dataTask] as? DataTaskDelegate {
